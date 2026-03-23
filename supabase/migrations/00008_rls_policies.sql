@@ -53,6 +53,8 @@ create policy "Members can create expenses" on public.expenses
     )
   );
 
+-- TODO: Add UPDATE/DELETE policies for expenses if editing/voiding expenses is added in a future phase
+
 -- Expense shares: same as expenses
 create policy "Members can view expense shares" on public.expense_shares
   for select using (
@@ -94,18 +96,9 @@ create policy "Members can create settlements" on public.settlements
     )
   );
 
--- Group events: members can view events
+-- group_events: triggers write events (security definer bypasses RLS); clients can only read
 create policy "Members can view group events" on public.group_events
   for select using (
-    exists (
-      select 1 from public.group_members
-      where group_members.group_id = group_events.group_id
-        and group_members.user_id = auth.uid()
-    )
-  );
-
-create policy "Members can insert group events" on public.group_events
-  for insert with check (
     exists (
       select 1 from public.group_members
       where group_members.group_id = group_events.group_id

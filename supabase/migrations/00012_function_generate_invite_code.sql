@@ -1,6 +1,7 @@
 create or replace function public.generate_invite_code()
 returns text
 language plpgsql
+security definer set search_path = public
 as $$
 declare
   chars text := 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';

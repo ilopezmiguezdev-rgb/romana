@@ -13,6 +13,8 @@ declare
   di integer := 0;
   creditor jsonb;
   debtor jsonb;
+  max_iterations integer := 1000;
+  iteration_count integer := 0;
   transfer numeric;
   creditor_amount numeric;
   debtor_amount numeric;
@@ -80,6 +82,10 @@ begin
   di := 0;
 
   while ci < jsonb_array_length(creditors) and di < jsonb_array_length(debtors) loop
+    iteration_count := iteration_count + 1;
+    if iteration_count > max_iterations then
+      raise exception 'simplify_debts exceeded max iterations';
+    end if;
     creditor := creditors->ci;
     debtor := debtors->di;
 

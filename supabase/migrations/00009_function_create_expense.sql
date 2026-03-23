@@ -28,11 +28,23 @@ begin
     raise exception 'Not a member of this group';
   end if;
 
+  -- Verify paid_by is also a member
+  if not exists (
+    select 1 from public.group_members
+    where group_id = p_group_id and user_id = p_paid_by
+  ) then
+    raise exception 'paid_by user is not a member of this group';
+  end if;
+
   insert into public.expenses (group_id, paid_by, description, amount, split_type)
   values (p_group_id, p_paid_by, p_description, p_amount, p_split_type)
   returning id into new_expense_id;
 
   n := array_length(p_participant_ids, 1);
+
+  if n is null or n = 0 then
+    raise exception 'participant_ids must not be empty';
+  end if;
 
   if p_split_type = 'even' then
     base_share := floor(p_amount * 100 / n) / 100;
@@ -50,6 +62,9 @@ begin
     end loop;
 
   elsif p_split_type = 'percent' then
+    if abs(( select sum(v) from unnest(p_percentages) v ) - 100) > 0.01 then
+      raise exception 'Percentages must sum to 100';
+    end if;
     for i in 1..n loop
       share_amount := floor(p_amount * p_percentages[i] / 100 * 100) / 100;
       insert into public.expense_shares (expense_id, user_id, amount)
