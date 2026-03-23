@@ -14,6 +14,8 @@ export function useBalances(groupId: string) {
 
     if (!error && data) {
       setDebts(data);
+    } else if (error) {
+      console.error("useBalances: failed to fetch balances", error);
     }
     setLoading(false);
   }

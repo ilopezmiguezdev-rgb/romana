@@ -25,6 +25,8 @@ export function useGroupDetail(groupId: string) {
         display_name: row.profiles?.display_name ?? "Unknown",
       }));
       setMembers(mapped);
+    } else if (error) {
+      console.error("useGroupDetail: failed to fetch members", error);
     }
     setLoading(false);
   }

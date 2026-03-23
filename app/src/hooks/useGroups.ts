@@ -30,6 +30,8 @@ export function useGroups() {
           new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
         );
       setGroups(mapped);
+    } else if (error) {
+      console.error("useGroups: failed to fetch groups", error);
     }
     setLoading(false);
   }

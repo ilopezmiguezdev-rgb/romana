@@ -20,6 +20,8 @@ export function useExpenses(groupId: string) {
         paid_by_name: row.profiles?.display_name ?? "Unknown",
       }));
       setExpenses(mapped);
+    } else if (error) {
+      console.error("useExpenses: failed to fetch expenses", error);
     }
     setLoading(false);
   }

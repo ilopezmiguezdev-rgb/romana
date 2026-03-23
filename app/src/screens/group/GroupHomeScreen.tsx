@@ -28,9 +28,13 @@ export function GroupHomeScreen({ route, navigation }: Props) {
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      if (user) setCurrentUserId(user.id);
-    });
+    supabase.auth.getUser()
+      .then(({ data: { user } }) => {
+        if (user) setCurrentUserId(user.id);
+      })
+      .catch((error) => {
+        console.error("GroupHomeScreen: failed to get user", error);
+      });
   }, []);
 
   function refetch() {
@@ -42,9 +46,9 @@ export function GroupHomeScreen({ route, navigation }: Props) {
     members.map((m) => [m.user_id, m.display_name])
   );
 
-  const myDebts = debts.filter(
-    (d) => d.from_user === currentUserId || d.to_user === currentUserId
-  );
+  const myDebts = currentUserId
+    ? debts.filter((d) => d.from_user === currentUserId || d.to_user === currentUserId)
+    : [];
 
   return (
     <ScrollView style={styles.container}>
@@ -56,9 +60,9 @@ export function GroupHomeScreen({ route, navigation }: Props) {
         ) : myDebts.length === 0 ? (
           <Text style={styles.settled}>All settled up!</Text>
         ) : (
-          myDebts.map((debt, i) => (
+          myDebts.map((debt) => (
             <BalanceCard
-              key={i}
+              key={`${debt.from_user}-${debt.to_user}`}
               fromName={memberNameMap[debt.from_user] ?? debt.from_user}
               toName={memberNameMap[debt.to_user] ?? debt.to_user}
               amount={debt.amount}

@@ -22,20 +22,29 @@ export function JoinGroupScreen({ navigation }: Props) {
     if (!code.trim()) return;
     setLoading(true);
 
-    const { data, error } = await supabase.rpc("join_group", {
+    const { data: groupId, error } = await supabase.rpc("join_group", {
       p_invite_code: code.trim().toUpperCase(),
     });
 
+    if (error) {
+      setLoading(false);
+      Alert.alert("Error", error.message);
+      return;
+    }
+
+    // Fetch the actual group name
+    const { data: groupData } = await supabase
+      .from("groups")
+      .select("name")
+      .eq("id", groupId)
+      .single();
+
     setLoading(false);
 
-    if (error) {
-      Alert.alert("Error", error.message);
-    } else {
-      navigation.replace("GroupHome", {
-        groupId: data,
-        groupName: "Group",
-      });
-    }
+    navigation.replace("GroupHome", {
+      groupId,
+      groupName: groupData?.name ?? "Group",
+    });
   }
 
   return (
