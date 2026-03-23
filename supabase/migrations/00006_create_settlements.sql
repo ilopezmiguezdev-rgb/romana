@@ -8,3 +8,7 @@ create table public.settlements (
 );
 
 alter table public.settlements enable row level security;
+
+create index idx_settlements_group_id on public.settlements(group_id);
+create index idx_settlements_from_user on public.settlements(from_user);
+create index idx_settlements_to_user on public.settlements(to_user);

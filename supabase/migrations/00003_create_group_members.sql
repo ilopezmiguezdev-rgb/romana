@@ -7,3 +7,5 @@ create table public.group_members (
 );
 
 alter table public.group_members enable row level security;
+
+create index idx_group_members_user_id on public.group_members(user_id);

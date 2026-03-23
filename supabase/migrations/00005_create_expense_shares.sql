@@ -7,3 +7,6 @@ create table public.expense_shares (
 );
 
 alter table public.expense_shares enable row level security;
+
+create index idx_expense_shares_expense_id on public.expense_shares(expense_id);
+create index idx_expense_shares_user_id on public.expense_shares(user_id);

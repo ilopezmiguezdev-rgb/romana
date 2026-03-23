@@ -9,3 +9,6 @@ create table public.expenses (
 );
 
 alter table public.expenses enable row level security;
+
+create index idx_expenses_group_id on public.expenses(group_id);
+create index idx_expenses_paid_by on public.expenses(paid_by);

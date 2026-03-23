@@ -8,3 +8,5 @@ create table public.group_events (
 );
 
 alter table public.group_events enable row level security;
+
+create index idx_group_events_group_id on public.group_events(group_id);
