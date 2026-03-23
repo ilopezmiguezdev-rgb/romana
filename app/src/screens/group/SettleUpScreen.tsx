@@ -48,12 +48,13 @@ export function SettleUpScreen({ route, navigation }: Props) {
               to_user: toUser,
               amount,
             });
-            setRecording(null);
 
             if (error) {
               Alert.alert("Error", error.message);
+              setRecording(null);
             } else {
-              refetch();
+              await refetch();
+              setRecording(null);
             }
           },
         },

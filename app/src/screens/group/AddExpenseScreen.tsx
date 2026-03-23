@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -33,9 +33,11 @@ export function AddExpenseScreen({ route, navigation }: Props) {
   const [loading, setLoading] = useState(false);
 
   // Pre-select all members once loaded
-  if (participants.length === 0 && members.length > 0) {
-    setParticipants(members.map((m) => m.user_id));
-  }
+  useEffect(() => {
+    if (participants.length === 0 && members.length > 0) {
+      setParticipants(members.map((m) => m.user_id));
+    }
+  }, [members]);
 
   function toggleParticipant(userId: string) {
     setParticipants((prev) =>
