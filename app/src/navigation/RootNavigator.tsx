@@ -17,11 +17,17 @@ export function RootNavigator() {
     // Check if user has set their display name (not just the auto-generated one from email)
     async function checkProfile() {
       setCheckingProfile(true);
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("profiles")
         .select("display_name")
         .eq("id", session!.user.id)
         .single();
+
+      if (error) {
+        console.error("Failed to check profile:", error);
+        setCheckingProfile(false);
+        return;
+      }
 
       // If display_name matches the email prefix, they haven't set a custom name
       const emailPrefix = session!.user.email?.split("@")[0] ?? "";
